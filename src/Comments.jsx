@@ -1,17 +1,50 @@
 import { useEffect, useState } from "react";
 import { CiCirclePlus } from "react-icons/ci";
-
+import { CiCircleMinus } from "react-icons/ci";
 
 function Comments({data}) {
   
   const [replies ,setReplies] = useState(data)
+  
+  function recursiveIterator(data) {
+    return data.map((comment) => ({
+      ...comment,
+      isOpen: true,
+      replies: comment.replies && comment.replies.length > 0 ? recursiveIterator(comment.replies): []
+    }));
+  }
 
+   useEffect(()=>{
+    const temp = recursiveIterator(data);
+     setReplies(temp)
+   },[])
+
+
+   const handleClick = (comment) => {
+    toggleIsOpen(comment.id);
+  };
+  
+  function toggleIsOpen(commentId){
+     setReplies(prevReplies => {
+        return toggleHelper(prevReplies , commentId)
+     })
+  }
+  function toggleHelper(preRepliesArray,commentId){
+      return preRepliesArray.map(c=>{
+         if(c.id === commentId){
+           return {...c , isOpen : !c.isOpen};
+         }
+         if(c.replies){
+          return { ...c , replies : toggleHelper(c.replies)}
+         }
+         return c;
+      })
+  }
+
+
+   
  
 
-  function handleClick(e,data){
-      // setReplies([...replies , {[data.isOpen] : !data.isOpen}])
-      // console.log([ data.isOpen : !data.isOpen ])
-  }
 
   return (
     
@@ -27,10 +60,16 @@ function Comments({data}) {
             <p>{data.content}</p>
 
             <div className="replies">
-                {data?.replies &&  <Comments data={data.replies}/>}
-                {data?.replies.length > 0 && <div className="icons">
-            <CiCirclePlus  onClick={(e)=>{handleClick(e,data)}} style={{fontSize:"24px" , cursor:"pointer"}}/>
-          </div> }
+            {data.replies && data.replies.length > 0 && (
+              <>
+                {data.isOpen && <Comments data={data.replies} />}
+                <div className="icons">
+                  { data.isOpen === true ?  <CiCirclePlus onClick={() => handleClick(data)} style={{ fontSize: "24px", cursor: "pointer" }}/>:
+                  <CiCircleMinus onClick={() => handleClick(data)} style={{ fontSize: "24px", cursor: "pointer" }}/>
+                  }
+                </div>
+              </>
+            )}
             </div>
         </div>
      </div>
