@@ -19,12 +19,13 @@ h1{
 }
 .comment{
   display: flex;
-  border-left: 2px solid black;
+  border-left: 2px solid rgb(230, 226, 226);
   border-top-left-radius: 8px;
   border-bottom-left-radius: 5px;
   margin-bottom: 0.8rem;
   gap: 10px;
   padding-left: 0.5rem;
+  position: relative;
  
 }
 .comment img{
@@ -47,4 +48,10 @@ h1{
 .detail p:last-of-type{
   font-family: Reddit Mono , sans-serif;
   margin-bottom: 1rem;
+}
+
+.icons{
+  position: absolute;
+  top: 10%;
+  left: -13px;
 }
